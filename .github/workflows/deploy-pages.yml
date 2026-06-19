@@ -57,6 +57,8 @@ jobs:
           mkdir -p _site/demo _site/dist
           cp -r dist/* _site/dist/
           cp demo/index.html _site/demo/index.html
+          # Custom domain for GitHub Pages (read from the published artifact).
+          cp CNAME _site/CNAME
           # Root redirect → /demo/ (the demo references ../dist/v1/… which
           # resolves to /dist/v1/… from the /demo/ path).
           printf '<!doctype html><meta http-equiv="refresh" content="0; url=./demo/">\n' > _site/index.html
