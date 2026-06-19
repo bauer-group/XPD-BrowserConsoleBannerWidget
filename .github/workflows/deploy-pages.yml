@@ -56,7 +56,7 @@ jobs:
           rm -rf _site
           mkdir -p _site/demo _site/dist
           cp -r dist/* _site/dist/
-          cp demo/index.html _site/demo/index.html
+          cp -r demo/* _site/demo/ # index.html + assets/ (favicon, logo)
           # Custom domain for GitHub Pages (read from the published artifact).
           cp CNAME _site/CNAME
           # Root redirect → /demo/ (the demo references ../dist/v1/… which

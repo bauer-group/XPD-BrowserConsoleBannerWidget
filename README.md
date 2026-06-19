@@ -5,6 +5,7 @@ Ein schlanker, zweistufiger Console-Banner, der Endanwender vor **Self-XSS-Betru
 Tonalität und Muster sind am bekannten Infomaniak-Beispiel angelehnt; die Brand-Umsetzung folgt der BAUER-GROUP-CI (Orange `#FF8500`, Warm-Gray-Skala, System-Font-Stack).
 
 [![Release](https://img.shields.io/github/v/release/bauer-group/XPD-BrowserConsoleBannerWidget?sort=semver)](https://github.com/bauer-group/XPD-BrowserConsoleBannerWidget/releases)
+[![npm](https://img.shields.io/npm/v/@bauer-group/console-security-banner-react?label=npm%20react)](https://www.npmjs.com/package/@bauer-group/console-security-banner-react)
 [![License: MIT](https://img.shields.io/badge/License-MIT-FF8500.svg)](LICENSE)
 
 ---

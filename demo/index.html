@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
     <title>BAUER GROUP · Console Security Banner — Demo</title>
+    <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+    <link rel="icon" href="assets/logo-square.png" sizes="any" />
+    <link rel="apple-touch-icon" href="assets/logo-square.png" />
     <style>
       :root {
         --orange-500: #ff8500;
@@ -39,6 +42,7 @@
           var(--warm-900);
         color: #fff;
         padding: 56px 24px 48px;
+        position: relative;
       }
       .wrap {
         max-width: 880px;
@@ -48,13 +52,58 @@
       header .wrap {
         padding: 0;
       }
+      .brandline {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 0 0 20px;
+      }
+      .logo {
+        height: 26px;
+        width: auto;
+        display: block;
+      }
+      .sep {
+        color: rgba(255, 255, 255, 0.28);
+        font-size: 1.2rem;
+        font-weight: 300;
+      }
       .eyebrow {
-        margin: 0 0 6px;
+        margin: 0;
         color: var(--orange-500);
         font-size: 0.72rem;
         font-weight: 700;
         letter-spacing: 0.34em;
         text-transform: uppercase;
+      }
+      .langtoggle {
+        position: absolute;
+        top: 18px;
+        right: 24px;
+        display: flex;
+        gap: 4px;
+      }
+      .langtoggle button {
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: transparent;
+        color: rgba(255, 255, 255, 0.7);
+        font: 600 0.72rem/1 var(--font-body);
+        padding: 6px 11px;
+        border-radius: 7px;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          border-color 0.15s,
+          color 0.15s;
+      }
+      .langtoggle button:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+        color: #fff;
+      }
+      .langtoggle button[aria-pressed='true'] {
+        background: var(--orange-500);
+        border-color: var(--orange-500);
+        color: #fff;
       }
       h1 {
         margin: 0;
@@ -235,10 +284,18 @@
   </head>
   <body>
     <header>
+      <div class="langtoggle" role="group" aria-label="Page language">
+        <button type="button" data-lang="de">DE</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
       <div class="wrap">
-        <p class="eyebrow">BAUER GROUP · Security</p>
+        <div class="brandline">
+          <img class="logo" src="assets/logo-wide-white.svg" alt="BAUER GROUP" width="200" />
+          <span class="sep" aria-hidden="true">|</span>
+          <span class="eyebrow" data-i18n="eyebrow">Security</span>
+        </div>
         <h1>Console Security Banner</h1>
-        <p class="lede">
+        <p class="lede" data-i18n="lede">
           Ein schlanker, zweistufiger Banner, der Endnutzer direkt in der Browser-Konsole vor
           Self-XSS-Betrug warnt — und nur dann erscheint, wenn die DevTools tatsächlich geöffnet
           werden.
@@ -251,30 +308,34 @@
         <span class="dot" aria-hidden="true"></span>
         <span>
           <strong id="status-title">DevTools schließen-Zustand wird beobachtet …</strong>
-          <small id="status-hint"
+          <small id="status-hint" data-i18n="status.hint"
             >Öffnen Sie die Konsole mit <kbd>F12</kbd> bzw. <kbd>⌘</kbd>+<kbd>⌥</kbd>+<kbd>I</kbd> —
             der Banner erscheint dort.</small
           >
         </span>
       </div>
 
-      <h2>Produktive Einbindung</h2>
-      <p>Ein einziger Tag im <code>&lt;head&gt;</code> genügt — so früh wie möglich:</p>
+      <h2 data-i18n="sec.embed">Produktive Einbindung</h2>
+      <p data-i18n="p.embed">
+        Ein einziger Tag im <code>&lt;head&gt;</code> genügt — so früh wie möglich:
+      </p>
       <figure class="snippet">
-        <button class="copy" type="button" data-copy="#snip-basic">Kopieren</button>
+        <button class="copy" type="button" data-copy="#snip-basic" data-i18n="copy">
+          Kopieren
+        </button>
         <pre
           id="snip-basic"
         ><code><span class="tok-tag">&lt;script</span> <span class="tok-attr">async</span>
         <span class="tok-attr">src</span>=<span class="tok-str">"https://widgets.professional-hosting.com/console-banner/v1/loader.min.js"</span><span class="tok-tag">&gt;&lt;/script&gt;</span></code></pre>
       </figure>
 
-      <h2>Mit Subresource-Integrity (SRI)</h2>
-      <p>
+      <h2 data-i18n="sec.sri">Mit Subresource-Integrity (SRI)</h2>
+      <p data-i18n="p.sri">
         Für strikte Sicherheit den Hash aus
         <code>console-banner/v1/integrity.json</code> pinnen:
       </p>
       <figure class="snippet">
-        <button class="copy" type="button" data-copy="#snip-sri">Kopieren</button>
+        <button class="copy" type="button" data-copy="#snip-sri" data-i18n="copy">Kopieren</button>
         <pre
           id="snip-sri"
         ><code><span class="tok-tag">&lt;script</span> <span class="tok-attr">async</span>
@@ -282,31 +343,42 @@
         <span class="tok-attr">integrity</span>=<span class="tok-str">"sha384-…"</span> <span class="tok-attr">crossorigin</span>=<span class="tok-str">"anonymous"</span><span class="tok-tag">&gt;&lt;/script&gt;</span></code></pre>
       </figure>
 
-      <h2>Sprache live testen</h2>
-      <p>
+      <h2 data-i18n="sec.lang">Sprache live testen</h2>
+      <p data-i18n="p.lang">
         Die Banner-Sprache folgt <code>&lt;html lang&gt;</code>, dann
         <code>navigator.languages</code>, sonst Englisch. Wählen Sie eine Sprache (setzt
         <code>?lang=</code> und lädt neu), öffnen Sie dann die Konsole:
       </p>
-      <nav class="langbar" id="langbar" aria-label="Banner-Sprache"></nav>
+      <nav
+        class="langbar"
+        id="langbar"
+        data-i18n-aria="langbar.label"
+        aria-label="Banner-Sprache"
+      ></nav>
 
-      <h2>Warum zweistufig?</h2>
+      <h2 data-i18n="sec.why">Warum zweistufig?</h2>
       <div class="grid">
         <div class="card">
-          <h3>Stage 1 · Loader</h3>
-          <p>~1,2 KB gzip, eager. Null Netzwerk-Requests, solange die Konsole geschlossen ist.</p>
+          <h3 data-i18n="card1.h">Stage 1 · Loader</h3>
+          <p data-i18n="card1.p">
+            ~1,2 KB gzip, eager. Null Netzwerk-Requests, solange die Konsole geschlossen ist.
+          </p>
         </div>
         <div class="card">
-          <h3>Stage 2 · Banner</h3>
-          <p>Lazy. Wird erst bei erkannten DevTools geladen — inkl. 22 Sprachen, einmal pro Tab.</p>
+          <h3 data-i18n="card2.h">Stage 2 · Banner</h3>
+          <p data-i18n="card2.p">
+            Lazy. Wird erst bei erkannten DevTools geladen — inkl. 22 Sprachen, einmal pro Tab.
+          </p>
         </div>
         <div class="card">
-          <h3>Kein Tracking</h3>
-          <p>Keine Cookies, keine Telemetrie, kein Render-Blocking. Reiner Schutzhinweis.</p>
+          <h3 data-i18n="card3.h">Kein Tracking</h3>
+          <p data-i18n="card3.p">
+            Keine Cookies, keine Telemetrie, kein Render-Blocking. Reiner Schutzhinweis.
+          </p>
         </div>
       </div>
 
-      <div class="callout">
+      <div class="callout" data-i18n="callout">
         <strong>Diese Demo</strong> lädt Loader &amp; Banner <em>relativ</em> aus
         <code>../dist/v1/</code>. Vorher einmal <code>npm run build</code> ausführen, dann das
         Repo-Root mit einem Static-Server ausliefern und <code>/demo/</code> öffnen.
@@ -315,8 +387,8 @@
 
     <footer>
       <div class="wrap">
-        <span>MIT © BAUER GROUP · Console Security Banner</span>
-        <span
+        <span data-i18n="footer.note">MIT © BAUER GROUP · Console Security Banner</span>
+        <span data-i18n="footer.doubt"
           >Im Zweifelsfall:
           <a class="link" href="https://support.bauer-group.com">support.bauer-group.com</a></span
         >
@@ -326,6 +398,8 @@
     <!-- Apply ?lang= to <html lang> BEFORE the banner reads it. -->
     <script>
       (function () {
+        // Banner-language pills control the WIDGET (via ?lang → <html lang>) —
+        // independent of the DE/EN page-prose toggle below.
         var LOCALES = [
           'de',
           'en',
@@ -350,20 +424,127 @@
           'vi',
           'zh',
         ];
-        var params = new URLSearchParams(location.search);
-        var lang = params.get('lang');
-        if (lang && LOCALES.indexOf(lang) !== -1) {
-          document.documentElement.lang = lang;
-        }
-        var active = document.documentElement.lang || 'de';
-
+        var qlang = new URLSearchParams(location.search).get('lang');
+        if (qlang && LOCALES.indexOf(qlang) !== -1) document.documentElement.lang = qlang;
+        var bannerActive = document.documentElement.lang || 'de';
         var bar = document.getElementById('langbar');
         LOCALES.forEach(function (code) {
           var a = document.createElement('a');
           a.href = '?lang=' + code;
           a.textContent = code.toUpperCase();
-          if (code === active) a.setAttribute('aria-current', 'true');
+          if (code === bannerActive) a.setAttribute('aria-current', 'true');
           bar.appendChild(a);
+        });
+
+        // Page prose: German + English. Keys map to [data-i18n] innerHTML.
+        var I18N = {
+          de: {
+            eyebrow: 'Security',
+            lede: 'Ein schlanker, zweistufiger Banner, der Endnutzer direkt in der Browser-Konsole vor Self-XSS-Betrug warnt — und nur dann erscheint, wenn die DevTools tatsächlich geöffnet werden.',
+            'status.title.idle': 'Bereit — öffnen Sie die DevTools-Konsole.',
+            'status.title.open': 'DevTools erkannt — sehen Sie in die Konsole.',
+            'status.hint':
+              'Öffnen Sie die Konsole mit <kbd>F12</kbd> bzw. <kbd>⌘</kbd>+<kbd>⌥</kbd>+<kbd>I</kbd> — der Banner erscheint dort.',
+            'sec.embed': 'Produktive Einbindung',
+            'p.embed':
+              'Ein einziger Tag im <code>&lt;head&gt;</code> genügt — so früh wie möglich:',
+            copy: 'Kopieren',
+            'copy.done': 'Kopiert ✓',
+            'sec.sri': 'Mit Subresource-Integrity (SRI)',
+            'p.sri':
+              'Für strikte Sicherheit den Hash aus <code>console-banner/v1/integrity.json</code> pinnen:',
+            'sec.lang': 'Sprache live testen',
+            'p.lang':
+              'Die Banner-Sprache folgt <code>&lt;html lang&gt;</code>, dann <code>navigator.languages</code>, sonst Englisch. Wählen Sie eine Sprache (setzt <code>?lang=</code> und lädt neu), öffnen Sie dann die Konsole:',
+            'langbar.label': 'Banner-Sprache',
+            'sec.why': 'Warum zweistufig?',
+            'card1.h': 'Stage 1 · Loader',
+            'card1.p':
+              '~1,2 KB gzip, eager. Null Netzwerk-Requests, solange die Konsole geschlossen ist.',
+            'card2.h': 'Stage 2 · Banner',
+            'card2.p':
+              'Lazy. Wird erst bei erkannten DevTools geladen — inkl. 22 Sprachen, einmal pro Tab.',
+            'card3.h': 'Kein Tracking',
+            'card3.p':
+              'Keine Cookies, keine Telemetrie, kein Render-Blocking. Reiner Schutzhinweis.',
+            callout:
+              '<strong>Diese Demo</strong> lädt Loader &amp; Banner <em>relativ</em> aus <code>../dist/v1/</code>. Vorher einmal <code>npm run build</code> ausführen, dann das Repo-Root mit einem Static-Server ausliefern und <code>/demo/</code> öffnen.',
+            'footer.note': 'MIT © BAUER GROUP · Console Security Banner',
+            'footer.doubt':
+              'Im Zweifelsfall: <a class="link" href="https://support.bauer-group.com">support.bauer-group.com</a>',
+          },
+          en: {
+            eyebrow: 'Security',
+            lede: 'A lean, two-stage banner that warns end users about Self-XSS scams right in the browser console — and only appears once DevTools are actually opened.',
+            'status.title.idle': 'Ready — open the DevTools console.',
+            'status.title.open': 'DevTools detected — check the console.',
+            'status.hint':
+              'Open the console with <kbd>F12</kbd> or <kbd>⌘</kbd>+<kbd>⌥</kbd>+<kbd>I</kbd> — the banner appears there.',
+            'sec.embed': 'Production embed',
+            'p.embed':
+              'A single tag in the <code>&lt;head&gt;</code> is enough — as early as possible:',
+            copy: 'Copy',
+            'copy.done': 'Copied ✓',
+            'sec.sri': 'With Subresource Integrity (SRI)',
+            'p.sri':
+              'For strict security, pin the hash from <code>console-banner/v1/integrity.json</code>:',
+            'sec.lang': 'Test the language live',
+            'p.lang':
+              'The banner language follows <code>&lt;html lang&gt;</code>, then <code>navigator.languages</code>, else English. Pick a language (sets <code>?lang=</code> and reloads), then open the console:',
+            'langbar.label': 'Banner language',
+            'sec.why': 'Why two stages?',
+            'card1.h': 'Stage 1 · Loader',
+            'card1.p': '~1.2 KB gzip, eager. Zero network requests while the console stays closed.',
+            'card2.h': 'Stage 2 · Banner',
+            'card2.p': 'Lazy. Loaded only once DevTools are detected — 22 languages, once per tab.',
+            'card3.h': 'No tracking',
+            'card3.p': 'No cookies, no telemetry, no render-blocking. A pure security notice.',
+            callout:
+              '<strong>This demo</strong> loads loader &amp; banner <em>relatively</em> from <code>../dist/v1/</code>. Run <code>npm run build</code> once, then serve the repo root with a static server and open <code>/demo/</code>.',
+            'footer.note': 'MIT © BAUER GROUP · Console Security Banner',
+            'footer.doubt':
+              'When in doubt: <a class="link" href="https://support.bauer-group.com">support.bauer-group.com</a>',
+          },
+        };
+
+        var STORE = 'csbDemoLang';
+        function detectPageLang() {
+          var saved = null;
+          try {
+            saved = localStorage.getItem(STORE);
+          } catch (e) {
+            /* ignore */
+          }
+          if (saved === 'de' || saved === 'en') return saved;
+          // Auto-detect the browser language, English fallback.
+          return (navigator.language || '').toLowerCase().indexOf('de') === 0 ? 'de' : 'en';
+        }
+        var pageLang = detectPageLang();
+
+        function applyI18n(lang) {
+          pageLang = lang;
+          try {
+            localStorage.setItem(STORE, lang);
+          } catch (e) {
+            /* ignore */
+          }
+          document.querySelectorAll('[data-i18n]').forEach(function (el) {
+            var v = I18N[lang][el.getAttribute('data-i18n')];
+            if (v != null) el.innerHTML = v;
+          });
+          document.querySelectorAll('[data-i18n-aria]').forEach(function (el) {
+            var v = I18N[lang][el.getAttribute('data-i18n-aria')];
+            if (v != null) el.setAttribute('aria-label', v);
+          });
+          document.querySelectorAll('.langtoggle button').forEach(function (b) {
+            b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
+          });
+          check();
+        }
+        document.querySelectorAll('.langtoggle button').forEach(function (b) {
+          b.addEventListener('click', function () {
+            applyI18n(b.getAttribute('data-lang'));
+          });
         });
 
         // Copy buttons.
@@ -371,18 +552,18 @@
           btn.addEventListener('click', function () {
             var el = document.querySelector(btn.getAttribute('data-copy'));
             navigator.clipboard.writeText(el.innerText.trim()).then(function () {
-              btn.textContent = 'Kopiert ✓';
+              btn.textContent = I18N[pageLang]['copy.done'];
               btn.setAttribute('data-done', 'true');
               setTimeout(function () {
-                btn.textContent = 'Kopieren';
+                btn.textContent = I18N[pageLang].copy;
                 btn.removeAttribute('data-done');
               }, 1600);
             });
           });
         });
 
-        // Lightweight DevTools-open indicator for the status card (cosmetic;
-        // the real detection lives in the loader).
+        // Lightweight DevTools-open indicator (cosmetic; real detection is in
+        // the loader). Status title text is language-aware.
         var status = document.getElementById('status');
         var title = document.getElementById('status-title');
         function check() {
@@ -390,13 +571,12 @@
             window.outerWidth - window.innerWidth > 160 ||
             window.outerHeight - window.innerHeight > 160;
           status.setAttribute('data-open', String(open));
-          title.textContent = open
-            ? 'DevTools erkannt — sehen Sie in die Konsole.'
-            : 'Bereit — öffnen Sie die DevTools-Konsole.';
+          title.textContent = I18N[pageLang][open ? 'status.title.open' : 'status.title.idle'];
         }
-        check();
         window.addEventListener('resize', check, { passive: true });
         setInterval(check, 1000);
+
+        applyI18n(pageLang); // initial render (also runs check())
       })();
     </script>
 
