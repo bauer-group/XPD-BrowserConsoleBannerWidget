@@ -42,6 +42,7 @@
     "secrets:sync": "node scripts/secrets/sync.mjs",
     "secrets:sync:dry": "node scripts/secrets/sync.mjs --dry-run",
     "secrets:list": "gh secret list",
+    "publish:bootstrap": "node scripts/publish-bootstrap.mjs",
     "validate": "npm run format:check && npm run typecheck && npm run lint && npm run test && npm run build",
     "ci": "npm ci && npm run validate",
     "clean": "rimraf dist coverage",
