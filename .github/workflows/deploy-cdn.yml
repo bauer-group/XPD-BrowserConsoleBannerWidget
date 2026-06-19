@@ -3,18 +3,18 @@ name: 🚚 Deploy CDN Zones
 # Builds dist/ once and fans out to every enabled zone in deploy/zones.json
 # via a matrix job. New zones or providers drop in by editing the manifest
 # and adding the matching secret — no workflow changes needed.
+#
+# Triggered by the Release workflow completing (not raw pushes): semantic-release
+# cuts the new tag first, then this runs and `git describe` resolves the freshly
+# released version — so the deployed artifact's version always matches the
+# release (no one-release lag). The release commit is pushed with GITHUB_TOKEN,
+# which cannot re-trigger workflows, hence we key off the Release run instead.
+# workflow_dispatch stays as a manual fallback.
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'src/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'scripts/build.mjs'
-      - 'deploy/**'
-      - 'scripts/deploy/**'
-      - '.github/workflows/deploy-cdn.yml'
+  workflow_run:
+    workflows: ['🚀 Release']
+    types: [completed]
   workflow_dispatch:
     inputs:
       zone:
@@ -37,6 +37,8 @@ concurrency:
 jobs:
   build:
     name: 🏗️ Build
+    # Only deploy when the release actually succeeded (or on a manual run).
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -76,6 +78,7 @@ jobs:
 
   plan:
     name: 🗺️ Plan zones
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 3
     outputs:
