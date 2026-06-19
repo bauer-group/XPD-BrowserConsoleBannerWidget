@@ -102,11 +102,10 @@ jobs:
           npm run build -w @bauer-group/console-security-banner-react
 
       - name: 📤 Publish (provenance, public)
+        # npm Trusted Publishing: authenticates via OIDC (id-token: write) —
+        # no NODE_AUTH_TOKEN. Configure the trusted publisher on npmjs for
+        # @bauer-group/console-security-banner-react (repo + this workflow).
         run: npm publish -w @bauer-group/console-security-banner-react --provenance --access public
-        env:
-          # Org-standard npm publish token (same one the reusable BG
-          # nodejs-build.yml uses; likely already set org-wide).
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_REGISTRY_PUBLISH_TOKEN }}
 
   publish-github:
     name: 📤 Publish React → GitHub Packages
