@@ -6,11 +6,14 @@
  * itself down. Returns a `stop()` function so callers (e.g. a React effect
  * cleanup) can detach early.
  *
- * Two heuristics:
- *   A — outer/inner viewport delta (docked DevTools; re-checked on resize +
- *       visibilitychange and via a bounded, silent safety-net interval).
- *   B — a getter-tripwire logged ONCE, but only if A did not already fire, so
- *       a docked-and-open console never leaves a stray probe line behind.
+ * Detection:
+ *   • Viewport delta (default) — the outer/inner window gap a DOCKED DevTools
+ *     panel creates, checked at load, on resize + visibilitychange, and via a
+ *     bounded, silent safety-net interval. Writes nothing to the console.
+ *   • Console getter-tripwire (OPT-IN via `probe: true`) — additionally
+ *     detects DevTools UNDOCKED into a separate window (which doesn't change
+ *     the viewport). It logs ONE tagged value, so the console is no longer
+ *     pristine — hence opt-in.
  */
 import type { ConsoleLike } from './render';
 
@@ -19,6 +22,13 @@ export interface WatchOptions {
   document?: Document | null;
   console?: ConsoleLike | null;
   threshold?: number;
+  /**
+   * Opt-in for stricter security requirements: additionally detect UNDOCKED
+   * DevTools (separate window) via a one-time console getter-tripwire. Off by
+   * default — enabling it logs a single probe value, so the console is no
+   * longer pristine.
+   */
+  probe?: boolean;
 }
 
 const noop = (): void => {};
@@ -65,7 +75,7 @@ export function watchDevtools(onOpen: () => void, options: WatchOptions = {}): (
     }
   }
 
-  /* Heuristic A. */
+  /* Viewport delta — fires for the common docked DevTools case. */
   function measure(): boolean {
     if (fired) return true;
     if (w!.outerWidth - w!.innerWidth > THRESHOLD || w!.outerHeight - w!.innerHeight > THRESHOLD) {
@@ -73,30 +83,6 @@ export function watchDevtools(onOpen: () => void, options: WatchOptions = {}): (
       return true;
     }
     return false;
-  }
-
-  /* Heuristic B: a no-op function whose `name` getter fires when the console
-     previews it. Safe when Object.defineProperty is missing. */
-  const trap = function (): string {
-    return '';
-  };
-  try {
-    Object.defineProperty(trap, 'name', {
-      get: () => {
-        fire();
-        return '';
-      },
-    });
-  } catch {
-    /* ancient engine — heuristic A still applies */
-  }
-  function probeOnce(): void {
-    if (!con) return;
-    try {
-      con.log('%c', '', trap);
-    } catch {
-      /* console-free env */
-    }
   }
 
   function onResize(): void {
@@ -109,16 +95,38 @@ export function watchDevtools(onOpen: () => void, options: WatchOptions = {}): (
     });
   }
 
-  /* Kick-off: A covers "already open". B (logged once) only if A stayed
-     silent, so a docked-open console isn't polluted with a probe line. */
+  /* Kick-off: covers "DevTools already docked-open at load". */
   measure();
-  if (!fired) probeOnce();
+
+  /* Opt-in console-render tripwire for UNDOCKED DevTools. A no-op function
+     carries a getter on `name` that the console reads when it previews the
+     value (now, or when the panel is opened later). Logs exactly one value. */
+  if (options.probe && !fired && con) {
+    const trap = function (): string {
+      return '';
+    };
+    try {
+      Object.defineProperty(trap, 'name', {
+        get: () => {
+          fire();
+          return '';
+        },
+      });
+    } catch {
+      /* ancient engine — viewport heuristic still applies */
+    }
+    try {
+      con.log('%c', '', trap);
+    } catch {
+      /* console-free env */
+    }
+  }
 
   w.addEventListener('resize', onResize, { passive: true });
   if (d) d.addEventListener('visibilitychange', measure as EventListener, false);
 
-  /* Silent viewport safety-net for a dock that emits no resize event.
-     Bounded to ~5 min so it never runs forever. */
+  /* Silent safety-net for a dock that emits no resize event. Bounded to ~5 min
+     so it never runs forever. */
   pid = w.setInterval(() => {
     if (fired || measure() || ++ticks > 150) cleanup();
   }, 2000);

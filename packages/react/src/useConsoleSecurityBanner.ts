@@ -23,6 +23,7 @@ export function useConsoleSecurityBanner(options: ConsoleBannerOptions = {}): vo
     nonce,
     cdnUrl = DEFAULT_CDN,
     integrity,
+    probe = false,
   } = options;
 
   useEffect(() => {
@@ -40,6 +41,7 @@ export function useConsoleSecurityBanner(options: ConsoleBannerOptions = {}): vo
       s.referrerPolicy = 'no-referrer';
       if (integrity) s.setAttribute('integrity', integrity);
       if (nonce) s.setAttribute('nonce', nonce);
+      if (probe) s.setAttribute('data-probe', '');
       s.setAttribute('data-bg-console-banner-loader', '1');
       (document.head || document.documentElement).appendChild(s);
       return () => {
@@ -49,10 +51,10 @@ export function useConsoleSecurityBanner(options: ConsoleBannerOptions = {}): vo
     }
 
     // Local mode: detect + render entirely from the bundle — zero requests.
-    const stop = watchDevtools(() => renderBanner({ lang }), { window, document });
+    const stop = watchDevtools(() => renderBanner({ lang }), { window, document, probe });
     return () => {
       w[FLAG] = false;
       stop();
     };
-  }, [mode, lang, disabled, nonce, cdnUrl, integrity]);
+  }, [mode, lang, disabled, nonce, cdnUrl, integrity, probe]);
 }

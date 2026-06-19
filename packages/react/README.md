@@ -80,14 +80,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 ## Props / options
 
-| Prop        | Type               | Default                                                      | Description                                                   |
-| ----------- | ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------- |
-| `mode`      | `'local' \| 'cdn'` | `'local'`                                                    | Bundle locally (zero requests) or load the CDN loader script. |
-| `lang`      | `string`           | auto                                                         | Force a locale (e.g. `'de'`); otherwise auto-detected.        |
-| `disabled`  | `boolean`          | `false`                                                      | Disable entirely (e.g. per environment).                      |
-| `nonce`     | `string`           | —                                                            | CSP nonce for the injected script (CDN mode).                 |
-| `cdnUrl`    | `string`           | `https://widgets.professional-hosting.com/console-banner/v1` | Override the CDN base (CDN mode).                             |
-| `integrity` | `string`           | —                                                            | SRI hash for the loader script (CDN mode).                    |
+| Prop        | Type               | Default                                                      | Description                                                                         |
+| ----------- | ------------------ | ------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `mode`      | `'local' \| 'cdn'` | `'local'`                                                    | Bundle locally (zero requests) or load the CDN loader script.                       |
+| `lang`      | `string`           | auto                                                         | Force a locale (e.g. `'de'`); otherwise auto-detected.                              |
+| `disabled`  | `boolean`          | `false`                                                      | Disable entirely (e.g. per environment).                                            |
+| `nonce`     | `string`           | —                                                            | CSP nonce for the injected script (CDN mode).                                       |
+| `cdnUrl`    | `string`           | `https://widgets.professional-hosting.com/console-banner/v1` | Override the CDN base (CDN mode).                                                   |
+| `integrity` | `string`           | —                                                            | SRI hash for the loader script (CDN mode).                                          |
+| `probe`     | `boolean`          | `false`                                                      | Strict-security opt-in: also detect **undocked** DevTools (logs one console value). |
 
 The hook accepts the same options object.
 

@@ -64,6 +64,12 @@ describe('ConsoleSecurityBanner (React)', () => {
     );
     expect(s.crossOrigin).toBe('anonymous');
     expect(s.getAttribute('nonce')).toBe('abc123');
+    expect(s.hasAttribute('data-probe')).toBe(false); // probe off by default
+  });
+
+  it('opts the CDN loader into the tripwire via probe', () => {
+    render(<ConsoleSecurityBanner mode="cdn" probe />);
+    expect((loaderScript() as HTMLScriptElement).hasAttribute('data-probe')).toBe(true);
   });
 
   it('honours a custom cdnUrl + integrity', () => {

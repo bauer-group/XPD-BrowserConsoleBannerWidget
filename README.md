@@ -66,9 +66,9 @@ Truth.
 ┌──────────────────────────────┐      ┌──────────────────────────────┐
 │  Stage 1 · loader.min.js     │      │  Stage 2 · banner.min.js     │
 │  ~1.2 KB gzip · eager        │ ──►  │  ~8 KB gzip · lazy           │
-│  · DevTools-Detect (A+B)     │      │  · 22 Sprachen (auto)        │
-│  · passiver Resize-Listener  │      │  · styled %c-Konsolen-Log    │
-│  · Probe-Intervall (2 s)     │      │  · einmal pro Tab            │
+│  · DevTools-Detect (Viewport)│      │  · 22 Sprachen (auto)        │
+│  · Resize + Visibility       │      │  · styled %c-Konsolen-Log    │
+│  · stiller Intervall-Check   │      │  · einmal pro Tab            │
 │  · bei Treffer → Stage 2     │      │                              │
 └──────────────────────────────┘      └──────────────────────────────┘
 ```
@@ -76,7 +76,7 @@ Truth.
 - **Stage 1** wird auf jeder Seite eingebunden, ist idempotent und macht **keine** Requests, solange die Konsole geschlossen bleibt.
 - **Stage 2** wird vom Loader dynamisch nachgezogen, sobald DevTools erkannt werden — erst dann fällt ein einziger HTTP-Request an.
 
-Detektion: **(A)** Outer-/Inner-Viewport-Delta (docked DevTools) und **(B)** ein Getter-Tripwire, der feuert, wenn die Konsole das getaggte Objekt rendert (undocked DevTools).
+Detektion standardmäßig über das **Outer-/Inner-Viewport-Delta** (docked DevTools) — **ohne** Konsolen-Ausgabe, die Konsole bleibt makellos. Für strenge Sicherheitsanforderungen erkennt eine **optionale Getter-Tripwire** (`data-probe`) zusätzlich _undocked_ DevTools (loggt dann einmalig einen Probe-Wert).
 
 ---
 
@@ -85,7 +85,7 @@ Detektion: **(A)** Outer-/Inner-Viewport-Delta (docked DevTools) und **(B)** ein
 ```text
 src/                     TypeScript-Source (CDN-Widget)
   core/                  geteilter, framework-agnostischer Core …
-    detect.ts            DevTools-Erkennung (Heuristik A+B)
+    detect.ts            DevTools-Erkennung (Viewport; Tripwire opt-in)
     render.ts            i18n + styled %c-Konsolen-Render
   loader.ts              Stage-1 IIFE (dünner Wrapper um core/detect)
   banner.ts              Stage-2 IIFE (dünner Wrapper um core/render)
@@ -152,7 +152,7 @@ Reihenfolge: **(1)** `<html lang>` → **(2)** `navigator.languages[]` → **(3)
 
 Unterstützt (22): `ar cs de en es fr hi hu it ja ko nl pl pt ro ru sv th tr uk vi zh`.
 
-**Sprache ändern/ergänzen:** Strings in `src/i18n/locales/<lang>.json` bearbeiten bzw. neue Datei anlegen und in `src/i18n/index.js` registrieren, dann `npm run build`. Alle Locales teilen denselben 5-Schlüssel-Vertrag (per Test erzwungen).
+**Sprache ändern/ergänzen:** Strings in `src/i18n/locales/<lang>.json` bearbeiten bzw. neue Datei anlegen und in `src/i18n/index.ts` registrieren, dann `npm run build`. Alle Locales teilen denselben 5-Schlüssel-Vertrag (per Test erzwungen).
 
 ---
 
@@ -188,10 +188,16 @@ Details: [docs/deployment.md](docs/deployment.md) · [docs/providers/cloudflare.
 
 ## Konfiguration (data-Attribute)
 
-| Attribut      | Zweck                                                              |
-| ------------- | ------------------------------------------------------------------ |
-| `data-cdn`    | Überschreibt die Basis-URL, von der Stage 2 nachgeladen wird.      |
-| `data-banner` | Überschreibt den kompletten Stage-2-Pfad (Vorrang vor `data-cdn`). |
+| Attribut      | Zweck                                                                                                                                                 |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-cdn`    | Überschreibt die Basis-URL, von der Stage 2 nachgeladen wird.                                                                                         |
+| `data-banner` | Überschreibt den kompletten Stage-2-Pfad (Vorrang vor `data-cdn`).                                                                                    |
+| `data-probe`  | **Opt-in** für strenge Sicherheit: erkennt zusätzlich **undocked** DevTools (loggt einmalig einen Probe-Wert). Default aus → Konsole bleibt makellos. |
+
+```html
+<!-- nur bei besonders strengen Sicherheitsanforderungen -->
+<script async src="…/console-banner/v1/loader.min.js" data-probe></script>
+```
 
 Anwendungsfälle: Staging/Preview, QA-Umgebungen, lokale Tests (siehe `demo/`).
 
@@ -224,7 +230,7 @@ Bei `nonce`/`hash`-Policies: Der Loader injiziert Stage 2 dynamisch; Browser pro
 
 ## Bekannte Grenzen
 
-- **Undocked-DevTools:** Die Viewport-Heuristik greift nicht; der Getter-Probe fängt den Fall mit bis zu 2 s Latenz ab.
+- **Undocked-DevTools** (separates Fenster): Die Viewport-Heuristik greift nicht und wird **standardmäßig nicht** erkannt — die Konsole bleibt dafür makellos. Für strenge Sicherheitsanforderungen per `data-probe` (bzw. `probe` im React-Paket) die Getter-Tripwire zuschalten; sie loggt dann einmalig einen Probe-Wert.
 - **Gezielt blockiert:** Sicherheitsbewusste Entwickler können den Loader abschalten — akzeptiert, das Banner richtet sich an Endnutzer.
 - **`console.clear()` nach Stage 2:** Seiten-Code, der `console.clear()` aufruft, kann das Banner entfernen; Reload löst es erneut aus.
 - **Firefox:** `%c`-Stile (Farbe/Weight/Padding/Background) werden ab FF ≥ 109 korrekt gerendert.

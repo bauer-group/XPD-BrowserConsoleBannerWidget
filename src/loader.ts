@@ -11,6 +11,8 @@
  * Overrides (optional):
  *   <script async src="…/loader.min.js" data-cdn="https://mirror.example"></script>
  *   <script async src="…/loader.min.js" data-banner="/custom/banner.min.js"></script>
+ *   <script async src="…/loader.min.js" data-probe></script>  (strict: also
+ *     detect undocked DevTools — logs one console value)
  */
 import { watchDevtools } from './core/detect';
 
@@ -33,6 +35,9 @@ type BgWindow = Window & typeof globalThis & { __bgConsoleBanner?: { v: string; 
   const BANNER_SRI = 'BG_BANNER_SRI_PLACEHOLDER';
 
   let nonce = '';
+  /* Opt-in console getter-tripwire (for stricter security: also catches
+     UNDOCKED DevTools). Off unless data-probe is present (and not "false"). */
+  let probe = false;
   try {
     const me =
       (d.currentScript as HTMLScriptElement | null) ||
@@ -43,6 +48,7 @@ type BgWindow = Window & typeof globalThis & { __bgConsoleBanner?: { v: string; 
     if (me) {
       if (me.dataset && me.dataset.cdn) CDN = String(me.dataset.cdn).replace(/\/+$/, '');
       if (me.dataset && me.dataset.banner) BANNER = String(me.dataset.banner);
+      if (me.dataset && me.dataset.probe != null) probe = me.dataset.probe !== 'false';
       /* Carry the host page's CSP nonce to the injected Stage-2 script —
          browsers do NOT propagate it to dynamically inserted scripts. */
       nonce = (me.nonce || me.getAttribute('nonce') || '') + '';
@@ -67,5 +73,5 @@ type BgWindow = Window & typeof globalThis & { __bgConsoleBanner?: { v: string; 
     (d.head || d.documentElement).appendChild(s);
   }
 
-  watchDevtools(loadBanner, { window: w, document: d });
+  watchDevtools(loadBanner, { window: w, document: d, probe });
 })(window, document);

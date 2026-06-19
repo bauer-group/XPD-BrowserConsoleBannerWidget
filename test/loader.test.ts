@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi, type MockInstance } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 const DEFAULT_ORIGIN = 'https://widgets.professional-hosting.com/console-banner/v1';
 
@@ -35,17 +35,12 @@ function injectedBanner(): HTMLScriptElement | null {
 }
 
 describe('loader Stage-1', () => {
-  let logSpy: MockInstance<(...args: unknown[]) => void>;
-
   beforeEach(() => {
     vi.useFakeTimers();
     delete (window as unknown as Record<string, unknown>).__bgConsoleBanner;
     document.head.querySelectorAll('script[data-bg-console-banner]').forEach((n) => n.remove());
     document.body.replaceChildren();
     setViewportDelta(false);
-    // Default to a no-op console so the getter-tripwire (heuristic B) stays
-    // dormant — this isolates the viewport heuristic (A) under test.
-    logSpy = vi.spyOn(console, 'log').mockImplementation(() => {}) as typeof logSpy;
   });
 
   afterEach(() => {
@@ -54,21 +49,32 @@ describe('loader Stage-1', () => {
     vi.restoreAllMocks();
   });
 
+  // Simulate DevTools reading the logged value's properties (incl. .name) —
+  // exactly what trips the getter probe in a real open console.
+  function previewLoggedValues(): void {
+    vi.spyOn(console, 'log').mockImplementation((...args: unknown[]) => {
+      args.forEach((a) => {
+        if (typeof a === 'function') void (a as { name: string }).name;
+      });
+    });
+  }
+
   it('does not inject Stage-2 while the console looks closed', async () => {
     placeLoaderScript();
     await loadLoader();
     expect(injectedBanner()).toBeNull();
   });
 
-  it('injects via the getter tripwire when the console previews the tagged object', async () => {
-    placeLoaderScript();
-    setViewportDelta(false); // viewport heuristic stays silent
-    // Simulate DevTools reading the logged value's properties (incl. .name).
-    logSpy.mockImplementation((...args: unknown[]) => {
-      args.forEach((a) => {
-        if (typeof a === 'function') void (a as { name: string }).name;
-      });
-    });
+  it('does not run the console tripwire unless opted in (data-probe)', async () => {
+    placeLoaderScript(); // no data-probe
+    previewLoggedValues();
+    await loadLoader();
+    expect(injectedBanner()).toBeNull(); // probe off by default → not triggered
+  });
+
+  it('injects via the opt-in tripwire (data-probe) for undocked DevTools', async () => {
+    placeLoaderScript({ probe: '' });
+    previewLoggedValues();
     await loadLoader();
     expect(injectedBanner()).not.toBeNull();
   });

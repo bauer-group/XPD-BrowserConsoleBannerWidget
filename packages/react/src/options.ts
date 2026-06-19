@@ -30,4 +30,9 @@ export interface ConsoleBannerOptions {
    *  from the published `console-banner/v1/integrity.json` for supply-chain
    *  hardening. */
   integrity?: string;
+
+  /** Opt-in for stricter security requirements: also detect **undocked**
+   *  DevTools (separate window) via a one-time console getter-tripwire. Off by
+   *  default — enabling it logs a single probe value to the console. */
+  probe?: boolean;
 }
