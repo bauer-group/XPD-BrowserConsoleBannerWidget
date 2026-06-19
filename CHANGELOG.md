@@ -1,3 +1,9 @@
+## [0.1.1](https://github.com/bauer-group/XPD-BrowserConsoleBannerWidget/compare/v0.1.0...v0.1.1) (2026-06-19)
+
+### 🐛 Bug Fixes
+
+* injected build version into widget artifacts ([aa9c24d](https://github.com/bauer-group/XPD-BrowserConsoleBannerWidget/commit/aa9c24d7568e9de3812e1d6b593e217ff9b167cf))
+
 ## [0.1.0](https://github.com/bauer-group/XPD-BrowserConsoleBannerWidget/compare/v0.0.0...v0.1.0) (2026-06-19)
 
 ### 🚀 Features
