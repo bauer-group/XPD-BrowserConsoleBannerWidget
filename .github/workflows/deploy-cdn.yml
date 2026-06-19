@@ -41,7 +41,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: 📥 Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0 # need tags so `git describe` can resolve the version
 
@@ -83,7 +83,7 @@ jobs:
       count: ${{ steps.plan.outputs.count }}
     steps:
       - name: 📥 Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: 🗺️ Derive zone matrix
         id: plan
@@ -113,7 +113,7 @@ jobs:
         zone: ${{ fromJson(needs.plan.outputs.zones) }}
     steps:
       - name: 📥 Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v6
