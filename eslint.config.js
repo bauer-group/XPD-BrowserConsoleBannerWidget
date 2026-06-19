@@ -1,42 +1,45 @@
 import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
 import globals from 'globals';
+
+const tsUnused = {
+  'no-unused-vars': 'off',
+  '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', caughtErrors: 'none' }],
+};
 
 export default [
   {
-    ignores: ['dist/**', 'coverage/**', 'node_modules/**'],
+    ignores: ['dist/**', 'coverage/**', 'node_modules/**', 'packages/**'],
   },
   js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    // Browser widget source — runs in the page, classic-script idioms.
-    files: ['src/**/*.js'],
+    // Browser widget source (TypeScript).
+    files: ['src/**/*.ts'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
       globals: globals.browser,
     },
-    rules: {
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', caughtErrors: 'none' }],
-    },
+    rules: tsUnused,
   },
   {
-    // Build / deploy / secrets scripts — Node ESM.
+    // Vitest tests (TypeScript) — jsdom environment + node.
+    files: ['test/**/*.ts'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: { ...globals.browser, ...globals.node },
+    },
+    rules: tsUnused,
+  },
+  {
+    // Build / deploy / secrets scripts — Node ESM (plain JS tooling).
     files: ['scripts/**/*.{mjs,js}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
       globals: globals.node,
-    },
-    rules: {
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', caughtErrors: 'none' }],
-    },
-  },
-  {
-    // Vitest tests — jsdom environment + vitest globals.
-    files: ['test/**/*.js'],
-    languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-      globals: { ...globals.browser, ...globals.node },
     },
     rules: {
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_', caughtErrors: 'none' }],

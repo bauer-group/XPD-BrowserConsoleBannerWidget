@@ -74,7 +74,7 @@ async function patch(name, replacements) {
 
 // Build one entry into <name>.js (readable) + <name>.min.js (+ .map).
 async function buildEntry(name) {
-  const entryPoints = [resolve(srcDir, `${name}.js`)];
+  const entryPoints = [resolve(srcDir, `${name}.ts`)];
   await build({ ...common, entryPoints, outfile: resolve(outDir, `${name}.js`), minify: false });
   await build({
     ...common,

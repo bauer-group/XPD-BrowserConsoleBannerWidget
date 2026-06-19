@@ -5,8 +5,11 @@
 #   - Push to main (excluding non-source-of-truth paths)
 #   - Manual dispatch with force-release option
 #
-# Validates the build (lint + tests + bundle) via the shared nodejs-build
-# workflow, then creates a semantic release.
+# Validates the whole repo (typecheck + lint + tests + build of the CDN widget
+# AND the React package), creates a semantic release, then publishes the React
+# npm package (@bauer-group/console-security-banner-react) to npm + GitHub
+# Packages at the SAME version. The widget and its React wrapper share one
+# version line; the CDN deploy is driven separately by deploy-cdn.yml.
 # =============================================================================
 
 name: 🚀 Release
@@ -41,9 +44,10 @@ jobs:
       package-manager: 'npm'
       frozen-lockfile: true
       run-lint: true
-      lint-command: 'npm run lint'
-      build-command: 'npm run build'
+      lint-command: 'npm run typecheck && npm run lint'
+      build-command: 'npm run build:all'
       run-tests: true
+      test-command: 'npm run test:all'
       run-audit: true
       audit-level: 'high'
       upload-artifacts: false
@@ -60,3 +64,81 @@ jobs:
       dry-run: false
       force-release: ${{ inputs.force-release || false }}
     secrets: inherit
+
+  # The BG reusable publish job assumes a single root package; our publishable
+  # artifact is the workspace sub-package packages/react. A thin, workspace-aware
+  # `npm publish -w` covers it cleanly (version synced to the release).
+  publish-npm:
+    name: 📤 Publish React → npm
+    needs: release
+    if: needs.release.outputs.release-created == 'true'
+    # Independent of the CDN deploy (driven by deploy-cdn.yml on Release
+    # success): a publish hiccup stays a visible red job but must not block
+    # CDN delivery.
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write # npm provenance
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v6
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: 📚 Install
+        run: npm ci
+
+      - name: 🔖 Sync version + build
+        run: |
+          npm version "${{ needs.release.outputs.version }}" \
+            --workspace=@bauer-group/console-security-banner-react --no-git-tag-version
+          npm run build -w @bauer-group/console-security-banner-react
+
+      - name: 📤 Publish (provenance, public)
+        run: npm publish -w @bauer-group/console-security-banner-react --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-github:
+    name: 📤 Publish React → GitHub Packages
+    needs: release
+    if: needs.release.outputs.release-created == 'true'
+    continue-on-error: true # best-effort mirror; never blocks CDN delivery
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v6
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+          registry-url: 'https://npm.pkg.github.com'
+
+      - name: 📚 Install
+        run: npm ci
+
+      - name: 🔖 Sync version + build
+        run: |
+          npm version "${{ needs.release.outputs.version }}" \
+            --workspace=@bauer-group/console-security-banner-react --no-git-tag-version
+          npm run build -w @bauer-group/console-security-banner-react
+
+      - name: 📤 Publish to GitHub Packages
+        # setup-node's registry-url (npm.pkg.github.com) routes the scoped
+        # package here; publishConfig carries no registry so it doesn't override.
+        run: npm publish -w @bauer-group/console-security-banner-react --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,15 +1,10 @@
 /*
  * Locale registry for the Console Security Banner (Stage 2).
  *
- * Each locale supplies the five strings consumed by banner.js:
- *   tagline · title · body · assurance · cta
- *
- * The JSON files are imported statically so the bundler (esbuild) can
- * inline every locale into the single Stage-2 artifact — no runtime fetch,
- * one cached file. English is the guaranteed fallback (see banner.js).
- *
- * Add a language by dropping a `<tag>.json` in ./locales and registering
- * it below; detectLang() in banner.js matches against these keys.
+ * Each locale supplies the five strings consumed by the renderer. The JSON
+ * files are imported statically so bundlers (esbuild for the CDN, tsup for the
+ * npm package) inline every locale into a single self-contained artifact — no
+ * runtime fetch. English is the guaranteed fallback.
  */
 import ar from './locales/ar.json';
 import cs from './locales/cs.json';
@@ -34,7 +29,18 @@ import uk from './locales/uk.json';
 import vi from './locales/vi.json';
 import zh from './locales/zh.json';
 
-export const MSG = {
+/** The five strings every locale must provide. */
+export interface BannerMessages {
+  tagline: string;
+  title: string;
+  body: string;
+  assurance: string;
+  cta: string;
+}
+
+export type LocaleMap = Record<string, BannerMessages>;
+
+export const MSG: LocaleMap = {
   ar,
   cs,
   de,
@@ -59,7 +65,7 @@ export const MSG = {
   zh,
 };
 
-/* Right-to-left scripts — exposed so banner.js can hint the console direction. */
-export const RTL = new Set(['ar']);
+/** Right-to-left scripts — render.ts prefixes a RLM mark for these. */
+export const RTL: ReadonlySet<string> = new Set(['ar']);
 
 export const FALLBACK_LANG = 'en';

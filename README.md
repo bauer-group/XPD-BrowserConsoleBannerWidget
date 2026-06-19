@@ -33,6 +33,32 @@ Empfohlen im `<head>`, so früh wie möglich. `async` ist korrekt: Der Loader bl
 
 ---
 
+## React-Integration
+
+Für React-19-Projekte gibt es das npm-Paket
+**[`@bauer-group/console-security-banner-react`](packages/react/)** — komfortabel
+einzubinden, **lokal gebundlet** (0 Requests, offline-tauglich) als Default oder
+optional vom CDN:
+
+```bash
+npm i @bauer-group/console-security-banner-react
+```
+
+```tsx
+import { ConsoleSecurityBanner } from '@bauer-group/console-security-banner-react';
+
+// einmal nahe der App-Wurzel (Next.js App Router, Vite, CRA …)
+<ConsoleSecurityBanner />              {/* local (Default), Sprache automatisch */}
+<ConsoleSecurityBanner mode="cdn" />   {/* stattdessen vom CDN laden */}
+```
+
+Komponente **und** Hook (`useConsoleSecurityBanner`), SSR-sicher, mit `"use client"`
+und Typen. Details: [packages/react/README.md](packages/react/README.md). Das
+Paket teilt sich den Core (`src/core`) mit dem CDN-Widget — eine Single Source of
+Truth.
+
+---
+
 ## Architektur (zwei Stufen)
 
 ```text
@@ -56,24 +82,31 @@ Detektion: **(A)** Outer-/Inner-Viewport-Delta (docked DevTools) und **(B)** ein
 ## Repository-Struktur
 
 ```text
-src/
-  loader.js              Stage-1 (autoriert, kommentiert)
-  banner.js              Stage-2 (autoriert, ESM, importiert i18n)
+src/                     TypeScript-Source (CDN-Widget)
+  core/                  geteilter, framework-agnostischer Core …
+    detect.ts            DevTools-Erkennung (Heuristik A+B)
+    render.ts            i18n + styled %c-Konsolen-Render
+  loader.ts              Stage-1 IIFE (dünner Wrapper um core/detect)
+  banner.ts              Stage-2 IIFE (dünner Wrapper um core/render)
   i18n/
-    index.js             Locale-Registry + Fallback 'en'
+    index.ts             Locale-Registry + Fallback 'en'
     locales/*.json        22 Sprachen × {tagline,title,body,assurance,cta}
+packages/react/          npm-Paket @bauer-group/console-security-banner-react …
+  src/                   Hook + Komponente (TS) — nutzt denselben src/core
+  tsup.config.ts         Build → ESM + CJS + .d.ts (use client)
 scripts/
-  build.mjs              esbuild → dist/v1 + SRI
+  build.mjs              esbuild: src/*.ts → dist/v1 + SRI (CDN-Widget)
   deploy/                provider-agnostische Deploy-Schicht (cloudflare/s3/bunny)
   secrets/sync.mjs       .env ↔ GitHub-Secrets
 deploy/zones.json        Deploy-Ziele (eine Zone: console-banner-cf)
-test/                    Vitest + jsdom (Loader, Banner, i18n)
+test/                    Vitest + jsdom (Loader, Banner, i18n) — TS
 demo/index.html          lokale Vorschau
 docs/                    Deployment-, Provider- & Secrets-Doku
 dist/                    Build-Artefakt (gitignored)
 ```
 
-`dist/` wird **nie** von Hand editiert — Quelle ist immer `src/`.
+Alles in `src/**` und `packages/react/src/**` ist **TypeScript**; esbuild (CDN)
+und tsup (npm) kompilieren nach JS. `dist/` wird **nie** von Hand editiert.
 
 ---
 

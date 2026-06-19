@@ -57,8 +57,43 @@ updates:
         patterns:
           - "eslint*"
           - "@eslint/*"
+          - "typescript"
+          - "typescript-eslint"
           - "globals"
           - "prettier*"
           - "husky"
           - "lint-staged"
+          - "rimraf"
+
+  # ---------------------------------------------------------------------------
+  # npm (React package — @bauer-group/console-security-banner-react)
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: "npm"
+    directory: "/packages/react"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "06:30"
+      timezone: "Etc/UTC"
+    labels:
+      - "dependencies"
+      - "npm"
+      - "react-package"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@testing-library/*"
+      build-tooling:
+        patterns:
+          - "tsup"
+          - "typescript"
+      test-tooling:
+        patterns:
+          - "vitest"
+          - "jsdom"
           - "rimraf"

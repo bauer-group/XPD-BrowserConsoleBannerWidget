@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { MSG, RTL, FALLBACK_LANG } from '../src/i18n/index.js';
+import { MSG, RTL, FALLBACK_LANG, type BannerMessages } from '../src/i18n/index';
 
-const REQUIRED_KEYS = ['tagline', 'title', 'body', 'assurance', 'cta'];
+const REQUIRED_KEYS: (keyof BannerMessages)[] = ['tagline', 'title', 'body', 'assurance', 'cta'];
 const locales = Object.keys(MSG);
 
 describe('i18n locale registry', () => {
