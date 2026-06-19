@@ -1,3 +1,9 @@
+## [0.1.2](https://github.com/bauer-group/XPD-BrowserConsoleBannerWidget/compare/v0.1.1...v0.1.2) (2026-06-19)
+
+### 🐛 Bug Fixes
+
+* removed stray orange bar after the tagline ([316c5d7](https://github.com/bauer-group/XPD-BrowserConsoleBannerWidget/commit/316c5d79e2ddc190c30aba81cced0c27bfd4e0cc)), closes [#FF8500](https://github.com/bauer-group/XPD-BrowserConsoleBannerWidget/issues/FF8500)
+
 ## [0.1.1](https://github.com/bauer-group/XPD-BrowserConsoleBannerWidget/compare/v0.1.0...v0.1.1) (2026-06-19)
 
 ### 🐛 Bug Fixes
