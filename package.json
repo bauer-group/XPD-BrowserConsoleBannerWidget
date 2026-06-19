@@ -1,6 +1,6 @@
 {
   "name": "@bauer-group/console-security-banner",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "BAUER GROUP Console Security Banner — a lean two-stage widget that warns end users about Self-XSS scams directly in the browser console, only when DevTools are opened.",
   "repository": {
     "type": "git",

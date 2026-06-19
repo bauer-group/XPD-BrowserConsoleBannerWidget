@@ -1,3 +1,9 @@
+## [0.2.0](https://github.com/bauer-group/XPD-BrowserConsoleBannerWidget/compare/v0.1.2...v0.2.0) (2026-06-19)
+
+### 🚀 Features
+
+* added React 19 package with shared TypeScript core ([0ee7b8c](https://github.com/bauer-group/XPD-BrowserConsoleBannerWidget/commit/0ee7b8cf5f1271e90a84e052dff6cd5a7c0a6e4d))
+
 ## [0.1.2](https://github.com/bauer-group/XPD-BrowserConsoleBannerWidget/compare/v0.1.1...v0.1.2) (2026-06-19)
 
 ### 🐛 Bug Fixes
