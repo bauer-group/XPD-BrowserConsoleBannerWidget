@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Shared Landing Pages — Deployment Zones",
+  "type": "object",
+  "required": ["zones"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "description": { "type": "string" },
+    "zones": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/zone" }
+    }
+  },
+  "definitions": {
+    "zone": {
+      "type": "object",
+      "required": ["name", "source", "provider", "config"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "description": "Internal zone identifier (kebab-case). Used in workflow matrix and CLI."
+        },
+        "description": { "type": "string" },
+        "source": {
+          "type": "string",
+          "description": "Local directory (relative to repo root) whose contents are deployed."
+        },
+        "provider": {
+          "type": "string",
+          "enum": ["bunny", "cloudflare", "s3"],
+          "description": "Provider adapter to use."
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "config": {
+          "type": "object",
+          "description": "Provider-specific configuration. Secrets are referenced via *Env fields that name an environment variable."
+        }
+      }
+    }
+  }
+}

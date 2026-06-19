@@ -1,0 +1,7 @@
+{
+  "tagline": "BIZTONSÁGI FIGYELMEZTETÉS",
+  "title": "ÁLLJ — NE ILLESSZEN BE IDE SEMMIT",
+  "body": "Ha valaki arra kérte, hogy másoljon vagy illesszen be valamit ebbe az ablakba egy funkció feloldásához, fiókja „ellenőrzéséhez“ vagy egy probléma megoldásához, az szinte biztosan csalás (Self-XSS). A támadó ezzel átveheti a munkamenetét, a hitelesítő adatait vagy a személyes adatait.",
+  "assurance": "A BAUER GROUP SOHA nem fogja arra kérni, hogy bármit beillesszen ebbe a konzolba.",
+  "cta": "Kétség esetén: support.bauer-group.com"
+}

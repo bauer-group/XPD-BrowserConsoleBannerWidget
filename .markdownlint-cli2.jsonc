@@ -1,0 +1,27 @@
+// Shared Landing Pages – Markdown Linting Configuration
+{
+  "config": {
+    "default": true,
+    // Allow inline HTML for custom components
+    "MD033": false,
+    // Allow duplicate headings in different sections
+    "MD024": { "siblings_only": true },
+    // Allow trailing punctuation in headings
+    "MD026": false,
+    // Line length (disabled for content-heavy docs)
+    "MD013": false,
+    // Allow emphasis as heading
+    "MD036": false,
+    // Table column style (disabled – tables with variable-width content)
+    "MD060": false
+  },
+  "globs": [
+    "**/*.md"
+  ],
+  "ignores": [
+    "node_modules",
+    "dist",
+    ".astro",
+    "CHANGELOG.md"
+  ]
+}

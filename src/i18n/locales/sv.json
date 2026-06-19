@@ -1,0 +1,7 @@
+{
+  "tagline": "SÄKERHETSMEDDELANDE",
+  "title": "STOPP — KLISTRA INTE IN NÅGOT HÄR",
+  "body": "Om någon har bett dig kopiera eller klistra in något i det här fönstret för att låsa upp en funktion, “verifiera” ditt konto eller lösa ett problem, är det nästan säkert en bluff (Self-XSS). Angriparen kan använda det för att kapa din session, dina inloggningsuppgifter eller dina personuppgifter.",
+  "assurance": "BAUER GROUP kommer ALDRIG att be dig klistra in något i den här konsolen.",
+  "cta": "Vid tveksamhet: support.bauer-group.com"
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "./zones.schema.json",
+  "description": "Deployment targets for the Console Security Banner. The built dist/ tree (v1/…) is uploaded to a Cloudflare R2 bucket under a project-scoped prefix. Add zones by appending a new entry.",
+  "zones": [
+    {
+      "name": "console-banner-cf",
+      "description": "Console Security Banner assets in the SHARED bucket bg-widgets, fronted by widgets.professional-hosting.com. Scoped to prefix console-banner/ with its OWN manifest (console-banner/.deploy-manifest.json), so sync-delete only ever removes keys this repo wrote — it NEVER touches other projects' assets living elsewhere in the bucket (e.g. the Microsites root deploy). Purge runs by URL, never zone-wide: NEVER set purgeEverything=true. EU-jurisdiction bucket → the endpoint MUST use the .eu. host. Result keys: console-banner/v1/loader.min.js etc. → https://widgets.professional-hosting.com/console-banner/v1/…",
+      "source": "dist",
+      "provider": "cloudflare",
+      "enabled": true,
+      "config": {
+        "accountId": "1bd524dcd7193eb23ed910d24bb8e67e",
+        "endpoint": "https://1bd524dcd7193eb23ed910d24bb8e67e.eu.r2.cloudflarestorage.com",
+        "bucket": "bg-widgets",
+        "prefix": "console-banner",
+        "accessKeyIdEnv": "R2_ACCESS_KEY_ID",
+        "secretAccessKeyEnv": "R2_SECRET_ACCESS_KEY",
+        "cacheControl": "public, max-age=300, s-maxage=31536000",
+        "concurrency": 8,
+        "zoneIdEnv": "CF_ZONE_ID",
+        "apiTokenEnv": "CF_PURGE_TOKEN",
+        "publicOrigin": ["https://widgets.professional-hosting.com"],
+        "purgeEverything": false
+      }
+    }
+  ]
+}

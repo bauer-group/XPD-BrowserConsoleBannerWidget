@@ -1,0 +1,7 @@
+{
+  "tagline": "BEZPEČNOSTNÍ UPOZORNĚNÍ",
+  "title": "STOP — SEM NIC NEVKLÁDEJTE",
+  "body": "Pokud vás někdo požádal, abyste do tohoto okna něco zkopírovali nebo vložili za účelem odemčení funkce, „ověření“ vašeho účtu nebo vyřešení problému, jde téměř jistě o podvod (Self-XSS). Útočník tím může převzít vaši relaci, přihlašovací údaje nebo osobní data.",
+  "assurance": "BAUER GROUP vás NIKDY nepožádá, abyste do této konzole cokoli vkládali.",
+  "cta": "V případě pochybností: support.bauer-group.com"
+}

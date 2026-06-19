@@ -1,0 +1,62 @@
+# =============================================================================
+# Release Workflow
+# =============================================================================
+# Triggers:
+#   - Push to main (excluding non-source-of-truth paths)
+#   - Manual dispatch with force-release option
+#
+# Validates the build (lint + tests + bundle) via the shared nodejs-build
+# workflow, then creates a semantic release.
+# =============================================================================
+
+name: 🚀 Release
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '.github/**'
+      - '*.md'
+      - 'docs/**'
+  workflow_dispatch:
+    inputs:
+      force-release:
+        description: 'force create release'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  packages: write
+  id-token: write
+
+jobs:
+  validate:
+    name: 🔍 Validate Build
+    uses: bauer-group/automation-templates/.github/workflows/nodejs-build.yml@main
+    with:
+      node-version-file: '.nvmrc'
+      package-manager: 'npm'
+      frozen-lockfile: true
+      run-lint: true
+      lint-command: 'npm run lint'
+      build-command: 'npm run build'
+      run-tests: true
+      run-audit: true
+      audit-level: 'high'
+      upload-artifacts: false
+
+  release:
+    name: 📦 Create Semantic Release
+    needs: [validate]
+    if: |
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      needs.validate.result == 'success'
+    uses: bauer-group/automation-templates/.github/workflows/modules-semantic-release.yml@main
+    with:
+      target-branch: 'main'
+      dry-run: false
+      force-release: ${{ inputs.force-release || false }}
+    secrets: inherit

@@ -1,0 +1,7 @@
+{
+  "tagline": "AVISO DE SEGURIDAD",
+  "title": "ALTO — NO PEGUE NADA AQUÍ",
+  "body": "Si alguien le ha pedido que copie o pegue algo en esta ventana para desbloquear una función, “verificar” su cuenta o resolver un problema, es casi con total seguridad una estafa (Self-XSS). El atacante puede usarlo para secuestrar su sesión, sus credenciales o sus datos personales.",
+  "assurance": "BAUER GROUP NUNCA le pedirá que pegue nada en esta consola.",
+  "cta": "En caso de duda: support.bauer-group.com"
+}

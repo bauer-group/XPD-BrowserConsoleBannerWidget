@@ -1,0 +1,7 @@
+{
+  "tagline": "GÜVENLİK UYARISI",
+  "title": "DUR — BURAYA HİÇBİR ŞEY YAPIŞTIRMAYIN",
+  "body": "Birisi sizden bir özelliği açmak, hesabınızı “doğrulamak” veya bir sorunu çözmek için bu pencereye bir şey kopyalamanızı ya da yapıştırmanızı istediyse, bu neredeyse kesinlikle bir dolandırıcılıktır (Self-XSS). Saldırgan bunu oturumunuzu, kimlik bilgilerinizi veya kişisel verilerinizi ele geçirmek için kullanabilir.",
+  "assurance": "BAUER GROUP bu konsola herhangi bir şey yapıştırmanızı ASLA istemez.",
+  "cta": "Şüphe duyduğunuzda: support.bauer-group.com"
+}

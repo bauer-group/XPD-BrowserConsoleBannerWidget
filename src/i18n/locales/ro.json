@@ -1,0 +1,7 @@
+{
+  "tagline": "NOTĂ DE SECURITATE",
+  "title": "STOP — NU LIPIȚI NIMIC AICI",
+  "body": "Dacă cineva v-a cerut să copiați sau să lipiți ceva în această fereastră pentru a debloca o funcție, a vă „verifica” contul sau a rezolva o problemă, este aproape sigur o înșelătorie (Self-XSS). Atacatorul o poate folosi pentru a vă prelua sesiunea, datele de autentificare sau datele personale.",
+  "assurance": "BAUER GROUP nu vă va cere NICIODATĂ să lipiți ceva în această consolă.",
+  "cta": "În caz de dubiu: support.bauer-group.com"
+}

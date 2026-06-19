@@ -1,0 +1,135 @@
+name: 🚚 Deploy CDN Zones
+
+# Builds dist/ once and fans out to every enabled zone in deploy/zones.json
+# via a matrix job. New zones or providers drop in by editing the manifest
+# and adding the matching secret — no workflow changes needed.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/build.mjs'
+      - 'deploy/**'
+      - 'scripts/deploy/**'
+      - '.github/workflows/deploy-cdn.yml'
+  workflow_dispatch:
+    inputs:
+      zone:
+        description: 'Deploy only this zone (leave empty for all enabled)'
+        required: false
+        type: string
+      dry-run:
+        description: 'Run without uploading'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-cdn
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 🏗️ Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v6
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build
+        run: npm run build
+
+      - name: 📤 Upload dist
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+          if-no-files-found: error
+
+  plan:
+    name: 🗺️ Plan zones
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      zones: ${{ steps.plan.outputs.zones }}
+      count: ${{ steps.plan.outputs.count }}
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v6
+
+      - name: 🗺️ Derive zone matrix
+        id: plan
+        env:
+          INPUT_ZONE: ${{ inputs.zone }}
+        run: |
+          set -euo pipefail
+          filter='.zones[] | select(.enabled != false) | {name, provider}'
+          zones=$(jq -c "[${filter}]" deploy/zones.json)
+          if [ -n "${INPUT_ZONE:-}" ]; then
+            zones=$(echo "$zones" | jq -c --arg n "$INPUT_ZONE" '[.[] | select(.name == $n)]')
+          fi
+          count=$(echo "$zones" | jq 'length')
+          echo "zones=$zones" >> "$GITHUB_OUTPUT"
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "Planning $count zone(s): $zones"
+
+  deploy:
+    name: 🚚 ${{ matrix.zone.name }} (${{ matrix.zone.provider }})
+    needs: [build, plan]
+    if: needs.plan.outputs.count != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        zone: ${{ fromJson(needs.plan.outputs.zones) }}
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v6
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 📥 Download dist
+        uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+
+      - name: 🚚 Deploy ${{ matrix.zone.name }}
+        env:
+          # Every potential zone secret is forwarded here. The deploy script
+          # reads only the one referenced by the zone's config. Add new
+          # names when you register new zones in deploy/zones.json.
+          # Cloudflare R2 + CDN (shared with the Microsites professional-hosting.com zone)
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          CF_PURGE_TOKEN: ${{ secrets.CF_PURGE_TOKEN }}
+          CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
+        run: |
+          npm run deploy -- \
+            --zone "${{ matrix.zone.name }}" \
+            ${{ inputs.dry-run && '--dry-run' || '' }}

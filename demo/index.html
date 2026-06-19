@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>BAUER GROUP · Console Security Banner — Demo</title>
+    <style>
+      :root {
+        --orange-500: #ff8500;
+        --orange-050: #fff7ed;
+        --warm-900: #231f1c;
+        --warm-800: #3a3430;
+        --warm-600: #6b635c;
+        --warm-200: #d9d3cd;
+        --warm-100: #f0edea;
+        --warm-50: #f9f8f6;
+        --ok: #1f9d55;
+        --radius: 14px;
+        --font-body:
+          system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+          sans-serif;
+        --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: var(--font-body);
+        color: var(--warm-900);
+        background: var(--warm-50);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      header {
+        background:
+          radial-gradient(120% 140% at 90% -20%, rgba(255, 133, 0, 0.22), transparent 60%),
+          var(--warm-900);
+        color: #fff;
+        padding: 56px 24px 48px;
+      }
+      .wrap {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      header .wrap {
+        padding: 0;
+      }
+      .eyebrow {
+        margin: 0 0 6px;
+        color: var(--orange-500);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        font-weight: 800;
+        letter-spacing: -0.01em;
+      }
+      header p.lede {
+        margin: 14px 0 0;
+        max-width: 56ch;
+        color: var(--warm-100);
+        font-size: 1.02rem;
+      }
+      main {
+        padding: 40px 0 72px;
+      }
+      h2 {
+        margin: 40px 0 12px;
+        font-size: 1.25rem;
+        color: var(--warm-800);
+      }
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 28px 0 0;
+        padding: 16px 20px;
+        background: #fff;
+        border: 1px solid var(--warm-100);
+        border-radius: var(--radius);
+        box-shadow: 0 1px 2px rgba(35, 31, 28, 0.04);
+      }
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--warm-200);
+        flex: none;
+        transition: background 0.3s;
+      }
+      .status[data-open='true'] .dot {
+        background: var(--ok);
+        box-shadow: 0 0 0 4px rgba(31, 157, 85, 0.18);
+      }
+      .status strong {
+        display: block;
+      }
+      .status small {
+        color: var(--warm-600);
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        margin-top: 16px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--warm-100);
+        border-radius: var(--radius);
+        padding: 20px 22px;
+      }
+      .card h3 {
+        margin: 0 0 6px;
+        font-size: 0.95rem;
+      }
+      .card p {
+        margin: 0;
+        color: var(--warm-600);
+        font-size: 0.9rem;
+      }
+      .callout {
+        background: var(--orange-050);
+        border: 1px solid #ffe2c2;
+        border-left: 4px solid var(--orange-500);
+        padding: 16px 20px;
+        border-radius: 0 var(--radius) var(--radius) 0;
+        margin: 20px 0;
+      }
+      figure.snippet {
+        margin: 0;
+        position: relative;
+      }
+      pre {
+        margin: 0;
+        background: var(--warm-900);
+        color: #f3efe9;
+        padding: 18px 20px;
+        border-radius: var(--radius);
+        overflow-x: auto;
+        font: 0.82rem / 1.6 var(--font-mono);
+        tab-size: 2;
+      }
+      pre .tok-tag {
+        color: #ff9e3d;
+      }
+      pre .tok-attr {
+        color: #ffd9a8;
+      }
+      pre .tok-str {
+        color: #b8e3a3;
+      }
+      .copy {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        font: 600 0.72rem / 1 var(--font-body);
+        padding: 7px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+      }
+      .copy:hover {
+        background: rgba(255, 255, 255, 0.16);
+      }
+      .copy[data-done='true'] {
+        border-color: var(--ok);
+        color: #9be4b6;
+      }
+      kbd {
+        background: var(--warm-100);
+        border: 1px solid var(--warm-200);
+        border-bottom-width: 2px;
+        border-radius: 6px;
+        padding: 2px 8px;
+        font: 0.82em var(--font-mono);
+      }
+      .langbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .langbar a {
+        text-decoration: none;
+        color: var(--warm-800);
+        background: #fff;
+        border: 1px solid var(--warm-200);
+        border-radius: 999px;
+        padding: 5px 13px;
+        font-size: 0.82rem;
+        transition:
+          border-color 0.15s,
+          color 0.15s;
+      }
+      .langbar a:hover {
+        border-color: var(--orange-500);
+        color: var(--orange-500);
+      }
+      .langbar a[aria-current='true'] {
+        background: var(--orange-500);
+        border-color: var(--orange-500);
+        color: #fff;
+        font-weight: 600;
+      }
+      footer {
+        border-top: 1px solid var(--warm-100);
+        padding: 28px 0;
+        color: var(--warm-600);
+        font-size: 0.85rem;
+      }
+      footer .wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 18px;
+        justify-content: space-between;
+      }
+      a.link {
+        color: var(--orange-500);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <p class="eyebrow">BAUER GROUP · Security</p>
+        <h1>Console Security Banner</h1>
+        <p class="lede">
+          Ein schlanker, zweistufiger Banner, der Endnutzer direkt in der Browser-Konsole vor
+          Self-XSS-Betrug warnt — und nur dann erscheint, wenn die DevTools tatsächlich geöffnet
+          werden.
+        </p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="status" id="status" data-open="false" role="status" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span>
+        <span>
+          <strong id="status-title">DevTools schließen-Zustand wird beobachtet …</strong>
+          <small id="status-hint"
+            >Öffnen Sie die Konsole mit <kbd>F12</kbd> bzw. <kbd>⌘</kbd>+<kbd>⌥</kbd>+<kbd>I</kbd> —
+            der Banner erscheint dort.</small
+          >
+        </span>
+      </div>
+
+      <h2>Produktive Einbindung</h2>
+      <p>Ein einziger Tag im <code>&lt;head&gt;</code> genügt — so früh wie möglich:</p>
+      <figure class="snippet">
+        <button class="copy" type="button" data-copy="#snip-basic">Kopieren</button>
+        <pre
+          id="snip-basic"
+        ><code><span class="tok-tag">&lt;script</span> <span class="tok-attr">async</span>
+        <span class="tok-attr">src</span>=<span class="tok-str">"https://widgets.professional-hosting.com/console-banner/v1/loader.min.js"</span><span class="tok-tag">&gt;&lt;/script&gt;</span></code></pre>
+      </figure>
+
+      <h2>Mit Subresource-Integrity (SRI)</h2>
+      <p>
+        Für strikte Sicherheit den Hash aus
+        <code>console-banner/v1/integrity.json</code> pinnen:
+      </p>
+      <figure class="snippet">
+        <button class="copy" type="button" data-copy="#snip-sri">Kopieren</button>
+        <pre
+          id="snip-sri"
+        ><code><span class="tok-tag">&lt;script</span> <span class="tok-attr">async</span>
+        <span class="tok-attr">src</span>=<span class="tok-str">"https://widgets.professional-hosting.com/console-banner/v1/loader.min.js"</span>
+        <span class="tok-attr">integrity</span>=<span class="tok-str">"sha384-…"</span> <span class="tok-attr">crossorigin</span>=<span class="tok-str">"anonymous"</span><span class="tok-tag">&gt;&lt;/script&gt;</span></code></pre>
+      </figure>
+
+      <h2>Sprache live testen</h2>
+      <p>
+        Die Banner-Sprache folgt <code>&lt;html lang&gt;</code>, dann
+        <code>navigator.languages</code>, sonst Englisch. Wählen Sie eine Sprache (setzt
+        <code>?lang=</code> und lädt neu), öffnen Sie dann die Konsole:
+      </p>
+      <nav class="langbar" id="langbar" aria-label="Banner-Sprache"></nav>
+
+      <h2>Warum zweistufig?</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Stage 1 · Loader</h3>
+          <p>~1,2 KB gzip, eager. Null Netzwerk-Requests, solange die Konsole geschlossen ist.</p>
+        </div>
+        <div class="card">
+          <h3>Stage 2 · Banner</h3>
+          <p>Lazy. Wird erst bei erkannten DevTools geladen — inkl. 22 Sprachen, einmal pro Tab.</p>
+        </div>
+        <div class="card">
+          <h3>Kein Tracking</h3>
+          <p>Keine Cookies, keine Telemetrie, kein Render-Blocking. Reiner Schutzhinweis.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Diese Demo</strong> lädt Loader &amp; Banner <em>relativ</em> aus
+        <code>../dist/v1/</code>. Vorher einmal <code>npm run build</code> ausführen, dann das
+        Repo-Root mit einem Static-Server ausliefern und <code>/demo/</code> öffnen.
+      </div>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <span>MIT © BAUER GROUP · Console Security Banner</span>
+        <span
+          >Im Zweifelsfall:
+          <a class="link" href="https://support.bauer-group.com">support.bauer-group.com</a></span
+        >
+      </div>
+    </footer>
+
+    <!-- Apply ?lang= to <html lang> BEFORE the banner reads it. -->
+    <script>
+      (function () {
+        var LOCALES = [
+          'de',
+          'en',
+          'fr',
+          'es',
+          'it',
+          'nl',
+          'pt',
+          'pl',
+          'cs',
+          'hu',
+          'ro',
+          'sv',
+          'tr',
+          'ru',
+          'uk',
+          'ar',
+          'hi',
+          'ja',
+          'ko',
+          'th',
+          'vi',
+          'zh',
+        ];
+        var params = new URLSearchParams(location.search);
+        var lang = params.get('lang');
+        if (lang && LOCALES.indexOf(lang) !== -1) {
+          document.documentElement.lang = lang;
+        }
+        var active = document.documentElement.lang || 'de';
+
+        var bar = document.getElementById('langbar');
+        LOCALES.forEach(function (code) {
+          var a = document.createElement('a');
+          a.href = '?lang=' + code;
+          a.textContent = code.toUpperCase();
+          if (code === active) a.setAttribute('aria-current', 'true');
+          bar.appendChild(a);
+        });
+
+        // Copy buttons.
+        document.querySelectorAll('.copy').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var el = document.querySelector(btn.getAttribute('data-copy'));
+            navigator.clipboard.writeText(el.innerText.trim()).then(function () {
+              btn.textContent = 'Kopiert ✓';
+              btn.setAttribute('data-done', 'true');
+              setTimeout(function () {
+                btn.textContent = 'Kopieren';
+                btn.removeAttribute('data-done');
+              }, 1600);
+            });
+          });
+        });
+
+        // Lightweight DevTools-open indicator for the status card (cosmetic;
+        // the real detection lives in the loader).
+        var status = document.getElementById('status');
+        var title = document.getElementById('status-title');
+        function check() {
+          var open =
+            window.outerWidth - window.innerWidth > 160 ||
+            window.outerHeight - window.innerHeight > 160;
+          status.setAttribute('data-open', String(open));
+          title.textContent = open
+            ? 'DevTools erkannt — sehen Sie in die Konsole.'
+            : 'Bereit — öffnen Sie die DevTools-Konsole.';
+        }
+        check();
+        window.addEventListener('resize', check, { passive: true });
+        setInterval(check, 1000);
+      })();
+    </script>
+
+    <!-- ============================================================= -->
+    <!--  DEMO INCLUDE — overrides the CDN paths for local testing.    -->
+    <!--  In production a single tag suffices:                          -->
+    <!--  <script async                                                 -->
+    <!--    src="https://widgets.professional-hosting.com/console-banner/v1/loader.min.js"></script> -->
+    <!-- ============================================================= -->
+    <script async src="../dist/v1/loader.min.js" data-banner="../dist/v1/banner.min.js"></script>
+  </body>
+</html>

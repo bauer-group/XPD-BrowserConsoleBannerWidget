@@ -1,0 +1,7 @@
+{
+  "tagline": "AVISO DE SEGURANÇA",
+  "title": "PARE — NÃO COLE NADA AQUI",
+  "body": "Se alguém lhe pediu para copiar ou colar algo nesta janela para desbloquear um recurso, “verificar” a sua conta ou resolver um problema, trata-se quase de certeza de uma fraude (Self-XSS). O atacante pode usá-lo para seques­trar a sua sessão, as suas credenciais ou os seus dados pessoais.",
+  "assurance": "A BAUER GROUP NUNCA lhe pedirá para colar nada nesta consola.",
+  "cta": "Em caso de dúvida: support.bauer-group.com"
+}

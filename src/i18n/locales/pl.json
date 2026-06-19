@@ -1,0 +1,7 @@
+{
+  "tagline": "OSTRZEŻENIE BEZPIECZEŃSTWA",
+  "title": "STOP — NIE WKLEJAJ TUTAJ NICZEGO",
+  "body": "Jeśli ktoś poprosił Cię o skopiowanie lub wklejenie czegokolwiek w tym oknie, aby odblokować funkcję, „zweryfikować” konto lub rozwiązać problem, jest to niemal na pewno oszustwo (Self-XSS). Atakujący może w ten sposób przejąć Twoją sesję, dane logowania lub dane osobowe.",
+  "assurance": "BAUER GROUP NIGDY nie poprosi Cię o wklejenie czegokolwiek w tej konsoli.",
+  "cta": "W razie wątpliwości: support.bauer-group.com"
+}

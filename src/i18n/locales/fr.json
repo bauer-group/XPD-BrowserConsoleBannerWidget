@@ -1,0 +1,7 @@
+{
+  "tagline": "AVIS DE SÉCURITÉ",
+  "title": "STOP — NE COLLEZ RIEN ICI",
+  "body": "Si quelqu’un vous a demandé de copier ou de coller quelque chose dans cette fenêtre pour débloquer une fonctionnalité, « vérifier » votre compte ou résoudre un problème, il s’agit presque certainement d’une arnaque (Self-XSS). L’attaquant peut s’en servir pour détourner votre session, vos identifiants ou vos données personnelles.",
+  "assurance": "BAUER GROUP ne vous demandera JAMAIS de coller quoi que ce soit dans cette console.",
+  "cta": "En cas de doute : support.bauer-group.com"
+}

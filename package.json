@@ -1,0 +1,66 @@
+{
+  "name": "@bauer-group/console-security-banner",
+  "version": "1.0.0",
+  "description": "BAUER GROUP Console Security Banner — a lean two-stage widget that warns end users about Self-XSS scams directly in the browser console, only when DevTools are opened.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bauer-group/XPD-BrowserConsoleBannerWidget.git"
+  },
+  "homepage": "https://github.com/bauer-group/XPD-BrowserConsoleBannerWidget",
+  "bugs": {
+    "url": "https://github.com/bauer-group/XPD-BrowserConsoleBannerWidget/issues"
+  },
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "setup": "npm install",
+    "update": "npm update",
+    "outdated": "npm outdated",
+    "audit": "npm audit",
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs",
+    "lint": "eslint \"src/**/*.js\" \"scripts/**/*.{mjs,js}\" \"test/**/*.js\"",
+    "lint:fix": "eslint --fix \"src/**/*.js\" \"scripts/**/*.{mjs,js}\" \"test/**/*.js\"",
+    "format": "prettier --write \"src/**/*.{js,json}\" \"scripts/**/*.{mjs,js}\" \"test/**/*.js\" \"deploy/*.json\" \"docs/**/*.md\" \"demo/*.html\" \"README.md\"",
+    "format:check": "prettier --check \"src/**/*.{js,json}\" \"scripts/**/*.{mjs,js}\" \"test/**/*.js\" \"deploy/*.json\" \"docs/**/*.md\" \"demo/*.html\" \"README.md\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "deploy": "node scripts/deploy/index.mjs",
+    "deploy:dry": "node scripts/deploy/index.mjs --dry-run",
+    "secrets:push": "node scripts/secrets/sync.mjs --push-only",
+    "secrets:sync": "node scripts/secrets/sync.mjs",
+    "secrets:sync:dry": "node scripts/secrets/sync.mjs --dry-run",
+    "secrets:list": "gh secret list",
+    "validate": "npm run format:check && npm run lint && npm run test && npm run build",
+    "ci": "npm ci && npm run validate",
+    "clean": "rimraf dist coverage",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,mjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,html}": "prettier --write"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1038.0",
+    "@eslint/js": "^9.20.0",
+    "@vitest/coverage-v8": "^3.0.5",
+    "cloudflare": "^5.2.0",
+    "esbuild": "^0.25.0",
+    "eslint": "^10.2.1",
+    "globals": "^16.0.0",
+    "husky": "^9.1.7",
+    "jsdom": "^26.0.0",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.3",
+    "rimraf": "^6.1.3",
+    "vitest": "^3.0.5"
+  }
+}

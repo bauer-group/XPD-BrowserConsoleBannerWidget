@@ -1,0 +1,7 @@
+{
+  "tagline": "AVVISO DI SICUREZZA",
+  "title": "STOP — NON INCOLLARE NULLA QUI",
+  "body": "Se qualcuno ti ha chiesto di copiare o incollare qualcosa in questa finestra per sbloccare una funzione, “verificare” il tuo account o risolvere un problema, si tratta quasi sicuramente di una truffa (Self-XSS). L’autore dell’attacco può usarlo per dirottare la tua sessione, le tue credenziali o i tuoi dati personali.",
+  "assurance": "BAUER GROUP non ti chiederà MAI di incollare nulla in questa console.",
+  "cta": "In caso di dubbio: support.bauer-group.com"
+}

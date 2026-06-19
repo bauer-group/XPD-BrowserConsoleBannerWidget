@@ -1,0 +1,7 @@
+{
+  "tagline": "THÔNG BÁO BẢO MẬT",
+  "title": "DỪNG LẠI — KHÔNG DÁN BẤT KỲ THỨ GÌ Ở ĐÂY",
+  "body": "Nếu ai đó yêu cầu bạn sao chép hoặc dán bất kỳ thứ gì vào cửa sổ này để mở khóa một tính năng, “xác minh” tài khoản của bạn hoặc khắc phục sự cố, thì gần như chắc chắn đây là một trò lừa đảo (Self-XSS). Kẻ tấn công có thể dùng nó để chiếm quyền phiên đăng nhập, thông tin đăng nhập hoặc dữ liệu cá nhân của bạn.",
+  "assurance": "BAUER GROUP sẽ KHÔNG BAO GIỜ yêu cầu bạn dán bất kỳ thứ gì vào bảng điều khiển này.",
+  "cta": "Khi nghi ngờ: support.bauer-group.com"
+}
