@@ -87,7 +87,8 @@ import { MSG, RTL, FALLBACK_LANG } from './i18n/index.js';
           '%c\n' +
           rtl +
           m.tagline +
-          '%c\n' +
+          '\n' +
+          '%c' +
           rtl +
           m.title +
           '%c\n\n' +

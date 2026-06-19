@@ -58,4 +58,15 @@ describe('banner Stage-2 render', () => {
     expect(styles).toHaveLength(6);
     expect(styles[0]).toContain('#FF8500'); // brand orange
   });
+
+  it('keeps the title background off the line break (no bleeding orange bar)', async () => {
+    await loadBanner();
+    const [template, ...styles] = logSpy.mock.calls[0];
+    // The orange title style must wrap ONLY the title text. If it wraps a
+    // newline, the console renders that background as a stray bar after the
+    // tagline line.
+    const titleIdx = styles.findIndex((s) => s.includes('background:#FF8500'));
+    const titleSegment = template.split('%c')[titleIdx + 1];
+    expect(titleSegment).not.toContain('\n');
+  });
 });
