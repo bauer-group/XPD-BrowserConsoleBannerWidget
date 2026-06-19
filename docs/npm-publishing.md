@@ -1,5 +1,8 @@
 # npm Publishing
 
+> Replicating this OIDC-publishing setup in **another** repo? See the
+> [npm publishing playbook](npm-publishing-playbook.md).
+
 ## What ships to npm
 
 Exactly **one** package: **`@bauer-group/console-security-banner-react`**
