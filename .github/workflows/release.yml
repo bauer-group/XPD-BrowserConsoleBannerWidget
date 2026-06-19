@@ -104,7 +104,9 @@ jobs:
       - name: 📤 Publish (provenance, public)
         run: npm publish -w @bauer-group/console-security-banner-react --provenance --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Org-standard npm publish token (same one the reusable BG
+          # nodejs-build.yml uses; likely already set org-wide).
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_REGISTRY_PUBLISH_TOKEN }}
 
   publish-github:
     name: 📤 Publish React → GitHub Packages
@@ -141,4 +143,4 @@ jobs:
         # package here; publishConfig carries no registry so it doesn't override.
         run: npm publish -w @bauer-group/console-security-banner-react --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN || secrets.GITHUB_TOKEN }}
