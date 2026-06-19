@@ -1,6 +1,6 @@
 /*!
  * BAUER GROUP — Console Security Banner (Core · Stage 2)
- * v1.0.0 · (c) BAUER GROUP · MIT
+ * v__BG_VERSION__ · (c) BAUER GROUP · MIT
  *
  * Printed only once, inside an already-open DevTools console.
  * Language is chosen from <html lang> first, then navigator.languages,

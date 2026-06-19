@@ -42,6 +42,8 @@ jobs:
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # need tags so `git describe` can resolve the version
 
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v6
@@ -51,6 +53,15 @@ jobs:
 
       - name: 📚 Install dependencies
         run: npm ci
+
+      - name: 🔖 Resolve version
+        run: |
+          # Latest release tag (clean semver) → build version. No tag yet
+          # (pre-first-release) leaves it empty, so the build falls back to
+          # package.json.
+          v=$(git describe --tags --abbrev=0 2>/dev/null || true)
+          echo "BANNER_VERSION=${v#v}" >> "$GITHUB_ENV"
+          echo "Resolved build version: ${v:-(package.json fallback)}"
 
       - name: 🏗️ Build
         run: npm run build

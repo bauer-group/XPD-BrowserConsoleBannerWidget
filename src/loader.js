@@ -1,6 +1,6 @@
 /*!
  * BAUER GROUP — Console Security Banner (Loader · Stage 1)
- * v1.0.0 · (c) BAUER GROUP · MIT
+ * v__BG_VERSION__ · (c) BAUER GROUP · MIT
  *
  * Purpose
  * -------
@@ -33,7 +33,7 @@
 
   /* Idempotency — tolerate the script being embedded twice on a page. */
   if (w.__bgConsoleBanner) return;
-  var ns = (w.__bgConsoleBanner = { v: '1.0.0', loaded: false });
+  var ns = (w.__bgConsoleBanner = { v: '__BG_VERSION__', loaded: false });
 
   /* CDN origin resolution. Defaults to the official endpoint; can be
      overridden via data-cdn on the <script> tag for staging/mirrors. */
