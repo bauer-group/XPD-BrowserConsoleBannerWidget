@@ -61,7 +61,7 @@
     "**/*.{json,md,html}": "prettier --write"
   },
   "devDependencies": {
-    "@aws-sdk/client-s3": "^3.1072.0",
+    "@aws-sdk/client-s3": "^3.1073.0",
     "@eslint/js": "^10.0.1",
     "@vitest/coverage-v8": "^4.1.9",
     "cloudflare": "^6.4.0",
