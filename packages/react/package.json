@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "^16.1.0",
+    "@types/node": "^24.19.2",
     "@types/react": "^19.0.0",
     "jsdom": "^31.0.1",
     "react": "^19.0.0",
