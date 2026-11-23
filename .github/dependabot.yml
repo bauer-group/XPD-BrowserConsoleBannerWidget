@@ -26,10 +26,17 @@ updates:
           - "*"
 
   # ---------------------------------------------------------------------------
-  # npm (build + deploy + test tooling)
+  # npm (root + all workspaces, incl. packages/react)
   # ---------------------------------------------------------------------------
+  # The root entry already updates packages/react/package.json because the
+  # repo uses npm workspaces with a single root package-lock.json. A separate
+  # "/packages/react" entry produced PRs without a lockfile update (npm ci
+  # fails on them), so it was folded into this one.
   - package-ecosystem: "npm"
     directory: "/"
+    # Only raise a range when the new version falls outside it. Keeps the
+    # published peerDependencies of packages/react (react ^19.0.0) intact.
+    versioning-strategy: increase-if-necessary
     schedule:
       interval: "weekly"
       day: "sunday"
@@ -40,10 +47,25 @@ updates:
       - "npm"
     commit-message:
       prefix: "chore(deps)"
+    ignore:
+      # TypeScript 7 (native compiler) is not supported by typescript-eslint
+      # 8.x (peer typescript ">=4.8.4 <6.1.0", still true for 8.73.0), so the
+      # major makes npm ci fail with ERESOLVE. Re-evaluate once it is.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     groups:
+      # react and react-dom must always share the exact same version.
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+          - "@testing-library/*"
       build-tooling:
         patterns:
           - "esbuild"
+          - "tsup"
       test-tooling:
         patterns:
           - "vitest"
@@ -63,37 +85,4 @@ updates:
           - "prettier*"
           - "husky"
           - "lint-staged"
-          - "rimraf"
-
-  # ---------------------------------------------------------------------------
-  # npm (React package — @bauer-group/console-security-banner-react)
-  # ---------------------------------------------------------------------------
-  - package-ecosystem: "npm"
-    directory: "/packages/react"
-    schedule:
-      interval: "weekly"
-      day: "sunday"
-      time: "13:30"
-      timezone: "Etc/UTC"
-    labels:
-      - "dependencies"
-      - "npm"
-      - "react-package"
-    commit-message:
-      prefix: "chore(deps)"
-    groups:
-      react:
-        patterns:
-          - "react"
-          - "react-dom"
-          - "@types/react"
-          - "@testing-library/*"
-      build-tooling:
-        patterns:
-          - "tsup"
-          - "typescript"
-      test-tooling:
-        patterns:
-          - "vitest"
-          - "jsdom"
           - "rimraf"
